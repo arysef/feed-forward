@@ -1,6 +1,6 @@
 #Based off tutorial at https://www.digitalocean.com/community/tutorials/how-to-build-a-neural-network-to-recognize-handwritten-digits-with-tensorflow
-
 import tensorflow as tf
+import numpy as np
 from tensorflow.examples.tutorials.mnist import input_data
 
 
@@ -18,27 +18,23 @@ n_output = 10   # output layer (0-9 digits)
 
 #more net parameters
 learning_rate = 1e-4
-n_iterations = 1000
+n_iterations = 4000
 batch_size = 128
 dropout = 0.5
 
 X = tf.placeholder("float", [None, n_input])
 Y = tf.placeholder("float", [None, n_output])
 keep_prob = tf.placeholder(tf.float32) 
-
-weights = {
+"""
     'w1': tf.Variable(tf.truncated_normal([n_input, n_hidden3], stddev=0.1)),
     'out': tf.Variable(tf.truncated_normal([n_hidden3, n_output], stddev=0.1)),
-}
+"""
+weights = tf.Variable(tf.truncated_normal([n_input, n_output], stddev=0.1))
 
-biases = {
-    'b1': tf.Variable(tf.constant(0.1, shape=[n_hidden3])),
-    'out': tf.Variable(tf.constant(0.1, shape=[n_output]))
-}
+biases = tf.Variable(tf.constant(0.1, shape=[n_output]))
 
-layer_3 = tf.add(tf.matmul(X, weights['w1']), biases['b1'])
-layer_drop = tf.nn.dropout(layer_3, keep_prob)
-output_layer = tf.matmul(layer_3, weights['out']) + biases['out']
+
+output_layer = tf.matmul(X, weights) + biases
 
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=Y, logits=output_layer))
 train_step = tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
@@ -63,5 +59,10 @@ for i in range(n_iterations):
 test_accuracy = sess.run(accuracy, feed_dict={X: mnist.test.images, Y: mnist.test.labels, keep_prob:1.0})
 print("\nAccuracy on test set:", test_accuracy)
 
-saver = tf.train.Saver()
-saver.save(sess, "~/digit_net")
+W_val, b_val = sess.run([weights, biases])
+
+np.savetxt("W.csv", W_val, delimiter=",")
+np.savetxt("b.csv", b_val, delimiter=",")
+
+#saver = tf.train.Saver()
+#saver.save(sess, "~/digit_net")
