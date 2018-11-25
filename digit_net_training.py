@@ -6,6 +6,8 @@ from tensorflow.examples.tutorials.mnist import input_data
 
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True) # y labels are oh-encoded
 
+print (type(mnist))
+
 #splits data into categories
 n_train = mnist.train.num_examples # 55,000
 n_validation = mnist.validation.num_examples # 5000
@@ -50,11 +52,11 @@ sess.run(init)
 for i in range(n_iterations):
     batch_x, batch_y = mnist.train.next_batch(batch_size)
     sess.run(train_step, feed_dict={X: batch_x, Y: batch_y, keep_prob:dropout})
-
     # print loss and accuracy (per minibatch)
     if i%100==0:
-        minibatch_loss, minibatch_accuracy = sess.run([cross_entropy, accuracy], feed_dict={X: batch_x, Y: batch_y, keep_prob:1.0})
-        print("Iteration", str(i), "\t| Loss =", str(minibatch_loss), "\t| Accuracy =", str(minibatch_accuracy))
+    	print ((batch_x.shape))
+    	minibatch_loss, minibatch_accuracy = sess.run([cross_entropy, accuracy], feed_dict={X: batch_x, Y: batch_y, keep_prob:1.0})
+    	print("Iteration", str(i), "\t| Loss =", str(minibatch_loss), "\t| Accuracy =", str(minibatch_accuracy))
 
 test_accuracy = sess.run(accuracy, feed_dict={X: mnist.test.images, Y: mnist.test.labels, keep_prob:1.0})
 print("\nAccuracy on test set:", test_accuracy)
