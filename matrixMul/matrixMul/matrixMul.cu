@@ -373,12 +373,12 @@ void read_csv(int row, int col, char *filename, double **data){
 
         int j = 0;
         const char* tok;
-        for (tok = strtok(line, "\t"); tok && *tok; j++, tok = strtok(NULL, "\t\n"))
+        for (tok = strtok(line, ","); tok && *tok; j++, tok = strtok(NULL, ",\n"))
         {
             data[i][j] = atof(tok);
-            printf("%f\t", data[i][j]);
+            printf("%f,", data[i][j]);
         }
-        printf("\n");
+        printf("\n Row Num: %d Elements: ", i+2);
 
         free(tmp);
         i++;
@@ -405,16 +405,15 @@ int main(int argc, char **argv)
     char fname[256];    strcpy(fname, argv[3]);
 
     double **data;
-    data = (double **)malloc(row * sizeof(double *));
+    data = (double **)malloc(2 * row * sizeof(double *));
     for (int i = 0; i < row; ++i){
-        data[i] = (double *)malloc(col * sizeof(double));
+        data[i] = (double *)malloc(2 * col * sizeof(double));
     }
 
     read_csv(row, col, fname, data);
 
     return 0;
-
-
+	/*
     // This will pick the best possible CUDA capable device, otherwise override the device ID based on input provided at the command line
     int dev = findCudaDevice(argc, (const char **)argv);
 
@@ -464,4 +463,5 @@ int main(int argc, char **argv)
 
 
     exit(matrix_result);
+	*/
 }
