@@ -38,8 +38,8 @@
 #include <helper_cuda.h>
 
 //Libaries Aryan added
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 
 /**
  * Matrix multiplication (CUDA Kernel) on the device: C = A * B
@@ -360,20 +360,30 @@ int matrixMultiply(int argc, char **argv, int block_size, dim3 &dimsA, dim3 &dim
 
 
 
+void read_csv(int row, int col, char *filename, double **data){
+    FILE *file;
+    file = fopen(filename, "r");
 
-const char* getfield(char* line, int num)
-{
-    const char* tok;
-    for (tok = strtok(line, ";");
-            tok && *tok;
-            tok = strtok(NULL, ";\n"))
+    int i = 0;
+    char line[4098];
+    while (fgets(line, 4098, file) && (i < row))
     {
-        if (!--num)
-            return tok;
-    }
-    return NULL;
-}
+        // double row[ssParams->nreal + 1];
+        char* tmp = strdup(line);
 
+        int j = 0;
+        const char* tok;
+        for (tok = strtok(line, "\t"); tok && *tok; j++, tok = strtok(NULL, "\t\n"))
+        {
+            data[i][j] = atof(tok);
+            printf("%f\t", data[i][j]);
+        }
+        printf("\n");
+
+        free(tmp);
+        i++;
+    }
+}
 
 
 
@@ -384,29 +394,26 @@ const char* getfield(char* line, int num)
 int main(int argc, char **argv)
 {
 
-    //Want to read 3rd value: should output 26 values 
-    FILE* stream = fopen("W.csv", "r");
-    char line[1024];
-    while (fgets(line, 1024, stream))
-    {
-        char* tmp = strdup(line);
-        printf("Field 3 would be %s\n", getfield(tmp, 3));
-        // NOTE strtok clobbers tmp
-        free(tmp);
-    }           
-
-    printf("[Matrix Multiply Using CUDA] - Starting...\n");
-
-    if (checkCmdLineFlag(argc, (const char **)argv, "help") ||
-        checkCmdLineFlag(argc, (const char **)argv, "?"))
-    {
-        printf("Usage -device=n (n >= 0 for deviceID)\n");
-        printf("      -wA=WidthA -hA=HeightA (Width x Height of Matrix A)\n");
-        printf("      -wB=WidthB -hB=HeightB (Width x Height of Matrix B)\n");
-        printf("  Note: Outer matrix dimensions of A & B matrices must be equal.\n");
-
-        exit(EXIT_SUCCESS);
+    /* code */
+    if (argc < 3){
+        printf("Please specify the CSV file as an input.\n");
+        exit(0);
     }
+
+    int row     = atoi(argv[1]);
+    int col     = atoi(argv[2]);
+    char fname[256];    strcpy(fname, argv[3]);
+
+    double **data;
+    data = (double **)malloc(row * sizeof(double *));
+    for (int i = 0; i < row; ++i){
+        data[i] = (double *)malloc(col * sizeof(double));
+    }
+
+    read_csv(row, col, fname, data);
+
+    return 0;
+
 
     // This will pick the best possible CUDA capable device, otherwise override the device ID based on input provided at the command line
     int dev = findCudaDevice(argc, (const char **)argv);
