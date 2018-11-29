@@ -383,6 +383,9 @@ const char* getfield(char* line, int num)
  */
 int main(int argc, char **argv)
 {
+
+    //Want to read 3rd value: should output 26 values 
+    FILE* stream = fopen("W.csv", "r");
     char line[1024];
     while (fgets(line, 1024, stream))
     {
@@ -449,8 +452,7 @@ int main(int argc, char **argv)
     int matrix_result = matrixMultiply(argc, argv, block_size, dimsA, dimsB);
     
 
-    //Want to read 3rd value: should output 26 values 
-    FILE* stream = fopen("W.csv", "r");
+
 
 
 
