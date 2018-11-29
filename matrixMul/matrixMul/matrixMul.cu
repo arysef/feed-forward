@@ -383,6 +383,15 @@ const char* getfield(char* line, int num)
  */
 int main(int argc, char **argv)
 {
+    char line[1024];
+    while (fgets(line, 1024, stream))
+    {
+        char* tmp = strdup(line);
+        printf("Field 3 would be %s\n", getfield(tmp, 3));
+        // NOTE strtok clobbers tmp
+        free(tmp);
+    }           
+
     printf("[Matrix Multiply Using CUDA] - Starting...\n");
 
     if (checkCmdLineFlag(argc, (const char **)argv, "help") ||
@@ -443,14 +452,7 @@ int main(int argc, char **argv)
     //Want to read 3rd value: should output 26 values 
     FILE* stream = fopen("W.csv", "r");
 
-    char line[1024];
-    while (fgets(line, 1024, stream))
-    {
-        char* tmp = strdup(line);
-        printf("Field 3 would be %s\n", getfield(tmp, 3));
-        // NOTE strtok clobbers tmp
-        free(tmp);
-    }
+
 
     exit(matrix_result);
 }
