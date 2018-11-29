@@ -29,12 +29,17 @@
 #include <stdio.h>
 #include <assert.h>
 
+
 // CUDA runtime
 #include <cuda_runtime.h>
 
 // Helper functions and utilities to work with CUDA
 #include <helper_functions.h>
 #include <helper_cuda.h>
+
+//Libaries Aryan added
+#include <stdlib.h>
+#include <string.h>
 
 /**
  * Matrix multiplication (CUDA Kernel) on the device: C = A * B
@@ -354,6 +359,25 @@ int matrixMultiply(int argc, char **argv, int block_size, dim3 &dimsA, dim3 &dim
 }
 
 
+
+
+const char* getfield(char* line, int num)
+{
+    const char* tok;
+    for (tok = strtok(line, ";");
+            tok && *tok;
+            tok = strtok(NULL, ";\n"))
+    {
+        if (!--num)
+            return tok;
+    }
+    return NULL;
+}
+
+
+
+
+
 /**
  * Program main
  */
@@ -414,6 +438,19 @@ int main(int argc, char **argv)
     printf("MatrixA(%d,%d), MatrixB(%d,%d)\n", dimsA.x, dimsA.y, dimsB.x, dimsB.y);
 
     int matrix_result = matrixMultiply(argc, argv, block_size, dimsA, dimsB);
+    
+
+    //Want to read 3rd value: should output 26 values 
+    FILE* stream = fopen("W.csv", "r");
+
+    char line[1024];
+    while (fgets(line, 1024, stream))
+    {
+        char* tmp = strdup(line);
+        printf("Field 3 would be %s\n", getfield(tmp, 3));
+        // NOTE strtok clobbers tmp
+        free(tmp);
+    }
 
     exit(matrix_result);
 }
