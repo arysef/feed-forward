@@ -365,8 +365,8 @@ void read_csv(int row, int col, char *filename, double **data){
     file = fopen(filename, "r");
 
     int i = 0;
-    char line[4098];
-    while (fgets(line, 4098, file) && (i < row))
+    char line[40980];
+    while (fgets(line, 40980, file) && (i < row))
     {
         // double row[ssParams->nreal + 1];
         char* tmp = strdup(line);
@@ -377,6 +377,7 @@ void read_csv(int row, int col, char *filename, double **data){
         {
             data[i][j] = atof(tok);
 //            printf("%f,", data[i][j]);
+	      printf("\n Column Num: %d Elements: ", j+2);
         }
 //        printf("\n Row Num: %d Elements: ", i+2);
 
@@ -395,10 +396,10 @@ int main(int argc, char **argv)
 {
 
     /* code */
-
+/*
     int row     = 784;
     int col     = 10;
-    char fname[256];    strcpy(fname, "W.csv");
+    char fname[10];    strcpy(fname, "W.csv");
 
     double **data;
     data = (double **)malloc(2 * row * sizeof(double *));
@@ -407,7 +408,36 @@ int main(int argc, char **argv)
     }
 
     read_csv(row, col, fname, data);
-    printf("Here is the value at 3,3: %f", data[3][3]); 
+    printf("Here is the value at 3,3: %f \n", data[783][9]); 
+
+
+    
+    double **bias;
+    char bname[10];    strcpy(bname, "b.csv");
+
+    bias = (double **)malloc(2 * 1 * sizeof(double *));
+    for (int i = 0; i < 1; ++i){
+        bias[i] = (double *)malloc(2 * 10 * sizeof(double));
+    }
+    read_csv(1, 10, bname, bias);
+    printf("Here is the value at 3,3: %f \n", bias[0][9]); 
+    
+*/
+    
+    double **images;
+    char iname[15];    strcpy(iname, "digits.csv");
+
+
+    images = (double **)malloc(2 * 9 * sizeof(double *));
+
+    for (int i = 0; i < 1; ++i){
+        images[i] = (double *)malloc(2 * 780 * sizeof(double));
+    }
+
+    read_csv(9, 780, iname, images);
+    //printf("Here is the value at 3,3: %f \n", images[1][1]); 
+
+    
     return 0;
 	/*
     // This will pick the best possible CUDA capable device, otherwise override the device ID based on input provided at the command line
