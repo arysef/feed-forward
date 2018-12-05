@@ -1,11 +1,10 @@
-#Based off tutorial at img = np.invert(Image.open("test_img.png").convert('L')).ravel()
-
 import tensorflow as tf
 import numpy as np
 from tensorflow.examples.tutorials.mnist import input_data
-
-
+import time
 mnist = input_data.read_data_sets("MNIST_data/", one_hot=True) # y labels are oh-encoded
+
+
 
 print (type(mnist))
 
@@ -46,26 +45,39 @@ correct_pred = tf.equal(tf.argmax(output_layer, 1), tf.argmax(Y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 init = tf.global_variables_initializer()
-sess = tf.Session()
-sess.run(init)
+for num_gpu in range(0,1):
+  #num_gpu = 0
+  #sess = tf.Session()
+  config = tf.ConfigProto(
+          device_count = {'GPU': num_gpu}
+      )
+  sess = tf.Session(config=config)
+  sess.run(init)
 
-# train on mini batches
-for i in range(n_iterations):
-    batch_x, batch_y = mnist.train.next_batch(batch_size)
-    sess.run(train_step, feed_dict={X: batch_x, Y: batch_y, keep_prob:dropout})
-    # print loss and accuracy (per minibatch)
-    if i%100==0:
-    	print ((batch_x.shape))
-    	minibatch_loss, minibatch_accuracy = sess.run([cross_entropy, accuracy], feed_dict={X: batch_x, Y: batch_y, keep_prob:1.0})
-    	print("Iteration", str(i), "\t| Loss =", str(minibatch_loss), "\t| Accuracy =", str(minibatch_accuracy))
 
-test_accuracy = sess.run(accuracy, feed_dict={X: mnist.test.images, Y: mnist.test.labels, keep_prob:1.0})
-print("\nAccuracy on test set:", test_accuracy)
+  start = time.clock()
+  # train on mini batches
+  for i in range(n_iterations):
+      batch_x, batch_y = mnist.train.next_batch(batch_size)
+      sess.run(train_step, feed_dict={X: batch_x, Y: batch_y, keep_prob:dropout})
+      # print loss and accuracy (per minibatch)
+      if i%100==0:
+        #print ((batch_x.shape))
+        minibatch_loss, minibatch_accuracy = sess.run([cross_entropy, accuracy], feed_dict={X: batch_x, Y: batch_y, keep_prob:1.0})
+        #print("Iteration", str(i), "\t| Loss =", str(minibatch_loss), "\t| Accuracy =", str(minibatch_accuracy))
 
-W_val, b_val = sess.run([weights, biases])
+  end = time.clock()
+  print ("Time it took to train with {} GPUs: {} seconds".format(num_gpu, end-start))
+  test_accuracy = sess.run(accuracy, feed_dict={X: mnist.test.images, Y: mnist.test.labels, keep_prob:1.0})
+  print("\nAccuracy on test set:", test_accuracy)
 
-np.savetxt("W.csv", W_val, delimiter=",")
-np.savetxt("b.csv", b_val, delimiter=",")
 
-#saver = tf.train.Saver()
-#saver.save(sess, "~/digit_net")
+num_images = 100
+img_vec = mnist.test.images[100:100+num_images]
+
+start = time.time()
+prediction = sess.run(tf.argmax(output_layer,1), feed_dict={X: img_vec})
+end = time.time()
+
+
+print ("Time to predict {} images: {}".format(num_images, end-start))
