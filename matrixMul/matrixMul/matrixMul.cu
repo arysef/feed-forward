@@ -396,7 +396,7 @@ int main(int argc, char **argv)
 {
 
     /* code */
-/*
+
     int row     = 784;
     int col     = 10;
     char fname[10];    strcpy(fname, "W.csv");
@@ -422,21 +422,20 @@ int main(int argc, char **argv)
     read_csv(1, 10, bname, bias);
     printf("Here is the value at 3,3: %f \n", bias[0][9]); 
     
-*/
-    
+/*    
     double **images;
     char iname[15];    strcpy(iname, "digits.csv");
 
 
-    images = (double **)malloc(2 * 9 * sizeof(double *));
+    images = (double **)malloc(2 * 10 * sizeof(double *));
 
     for (int i = 0; i < 1; ++i){
-        images[i] = (double *)malloc(2 * 780 * sizeof(double));
+        images[i] = (double *)malloc(2 * 784 * sizeof(double));
     }
 
-    read_csv(9, 780, iname, images);
+    read_csv(9, 784, iname, images);
     //printf("Here is the value at 3,3: %f \n", images[1][1]); 
-
+*/
     
     return 0;
 	/*
