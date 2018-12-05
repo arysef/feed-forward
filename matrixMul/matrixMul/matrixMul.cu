@@ -28,6 +28,7 @@
 // System includes
 #include <stdio.h>
 #include <assert.h>
+#include "digits.h"
 
 
 // CUDA runtime
@@ -422,6 +423,7 @@ int main(int argc, char **argv)
     read_csv(1, 10, bname, bias);
     printf("Here is the value at 3,3: %f \n", bias[0][9]); 
     
+    printf("Here is the value at 0,5: %f \n", img[0][5]); 
 /*    
     double **images;
     char iname[15];    strcpy(iname, "digits.csv");
